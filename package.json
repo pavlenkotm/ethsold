@@ -1,0 +1,30 @@
+{
+  "name": "ethsold",
+  "version": "1.0.0",
+  "description": "Ethereum Smart Contracts Collection",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:voting": "hardhat run scripts/deploy-voting.js",
+    "deploy:crowdfunding": "hardhat run scripts/deploy-crowdfunding.js",
+    "deploy:all": "hardhat run scripts/deploy-all.js",
+    "node": "hardhat node",
+    "clean": "hardhat clean"
+  },
+  "keywords": [
+    "ethereum",
+    "solidity",
+    "smart-contracts",
+    "blockchain",
+    "voting",
+    "crowdfunding"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.0",
+    "dotenv": "^16.3.1"
+  }
+}
