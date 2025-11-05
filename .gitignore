@@ -3,3 +3,29 @@
 
 # Ada Library Information
 *.ali
+
+# Hardhat files
+cache
+artifacts
+node_modules
+
+# Environment variables
+.env
+
+# Coverage reports
+coverage
+coverage.json
+
+# Typechain
+typechain
+typechain-types
+
+# Deployment data
+deployments/*.json
+
+# IDE
+.vscode
+.idea
+
+# Logs
+*.log
