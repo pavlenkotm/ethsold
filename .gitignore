@@ -3,3 +3,36 @@
 
 # Ada Library Information
 *.ali
+
+# Node modules
+node_modules/
+
+# Hardhat files
+cache/
+artifacts/
+
+# Environment variables
+.env
+
+# TypeScript
+*.tsbuildinfo
+
+# Coverage
+coverage/
+coverage.json
+
+# Hardhat local network
+.hardhat/
+
+# VS Code
+.vscode/
+
+# Mac
+.DS_Store
+
+# Logs
+*.log
+
+# Build files
+dist/
+build/
