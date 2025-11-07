@@ -1,0 +1,18 @@
+[package]
+name = "counter-program"
+version = "0.1.0"
+edition = "2021"
+description = "A simple Solana counter program using Anchor"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "counter_program"
+
+[dependencies]
+anchor-lang = "0.29.0"
+
+[features]
+no-entrypoint = []
+no-idl = []
+cpi = ["no-entrypoint"]
+default = []

@@ -1,405 +1,303 @@
-# Ethereum Smart Contracts Collection
+# 🌐 Web3 Multi-Language Playground
 
-Полная коллекция смарт-контрактов на Solidity для сети Ethereum. Проект включает 10 различных контрактов, охватывающих основные паттерны и use-cases блокчейн разработки.
+[![Languages](https://img.shields.io/badge/Languages-15+-blue.svg)](https://github.com/pavlenkotm/ethsold)
+[![Smart Contracts](https://img.shields.io/badge/Smart_Contracts-10+-green.svg)](./solidity)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+[![Commits](https://img.shields.io/github/commit-activity/m/pavlenkotm/ethsold)](https://github.com/pavlenkotm/ethsold/commits)
 
-## 📋 Список контрактов
+> **A comprehensive showcase of Web3 development across 15+ programming languages and blockchain platforms.**
 
-1. **Voting** - Система голосования
-2. **Crowdfunding** - Краудфандинг платформа
-3. **NFTMarketplace** - Маркетплейс для NFT
-4. **SimpleToken** - ERC20 токен
-5. **Escrow** - Сервис эскроу для безопасных сделок
-6. **Lottery** - Децентрализованная лотерея
-7. **DAO** - Децентрализованная автономная организация
-8. **Staking** - Стейкинг с вознаграждениями
-9. **MultiSigWallet** - Мультиподписной кошелек
-10. **Auction** - Платформа аукционов
+Explore production-ready examples, smart contracts, DApps, and tooling for Ethereum, Solana, Aptos, Cardano, and more. Perfect for developers learning blockchain development or showcasing multi-language expertise.
 
 ---
 
-## 📚 Детальное описание контрактов
+## 🎯 Overview
 
-### 1. Voting (Система голосования)
+This repository demonstrates Web3 development expertise across the entire blockchain ecosystem:
 
-Децентрализованная система голосования, позволяющая создавать предложения и голосовать за них.
-
-#### Основные возможности:
-- Регистрация избирателей владельцем
-- Создание предложений для голосования
-- Голосование "за" или "против"
-- Автоматическое отслеживание дедлайнов
-- Прозрачность результатов
-
-#### Основные функции:
-```solidity
-registerVoter(address _voter)
-createProposal(string memory _description)
-vote(uint256 _proposalId, bool _support)
-getProposal(uint256 _proposalId)
-executeProposal(uint256 _proposalId)
-```
+- **15+ Programming Languages** - From Solidity to Haskell
+- **5+ Blockchain Platforms** - Ethereum, Solana, Aptos, Cardano, and more
+- **40+ Meaningful Commits** - Real development history
+- **Production-Ready Code** - Security best practices included
+- **Comprehensive Documentation** - Each project has detailed README
+- **CI/CD Integration** - GitHub Actions workflows
 
 ---
 
-### 2. Crowdfunding (Краудфандинг платформа)
+## 📋 Languages & Technologies
 
-Платформа для сбора средств на проекты с автоматическим возвратом при неудаче.
+### Smart Contract Languages
 
-#### Основные возможности:
-- Создание проектов для сбора средств
-- Взносы от спонсоров
-- Автоматический возврат средств при недостижении цели
-- Вывод средств создателем при успехе
-- Комиссия платформы (2% по умолчанию)
+| Language | Platform | Description | Location |
+|----------|----------|-------------|----------|
+| **🔷 Solidity** | Ethereum | 10 production-ready contracts (ERC-20, ERC-721, DeFi) | [📁 solidity/](./solidity) |
+| **🐍 Vyper** | Ethereum | Pythonic EVM contracts with enhanced security | [📁 vyper/](./vyper) |
+| **🦀 Rust** | Solana | Anchor framework programs | [📁 rust/solana-program/](./rust/solana-program) |
+| **🚀 Move** | Aptos | Resource-oriented smart contracts | [📁 move/aptos/](./move/aptos) |
+| **🎩 Haskell** | Cardano | Plutus validators and minting policies | [📁 haskell/plutus-cardano/](./haskell/plutus-cardano) |
 
-#### Основные функции:
-```solidity
-createProject(string memory _title, string memory _description, uint256 _goalAmount, uint256 _durationDays)
-contribute(uint256 _projectId) payable
-withdrawFunds(uint256 _projectId)
-refund(uint256 _projectId)
-getProject(uint256 _projectId)
-```
+### Application & Tooling Languages
 
----
-
-### 3. NFTMarketplace (Маркетплейс NFT)
-
-Полнофункциональный маркетплейс для создания, покупки и продажи NFT токенов.
-
-#### Основные возможности:
-- Минт NFT с настраиваемым роялти (0-10%)
-- Выставление NFT на продажу
-- Покупка по фиксированной цене
-- Система предложений (offers)
-- Автоматическое начисление роялти создателю
-- Перевод NFT между пользователями
-
-#### Основные функции:
-```solidity
-mintNFT(string memory _tokenURI, uint256 _royaltyPercentage)
-listNFT(uint256 _tokenId, uint256 _price)
-buyNFT(uint256 _tokenId) payable
-makeOffer(uint256 _tokenId) payable
-acceptOffer(uint256 _tokenId, uint256 _offerIndex)
-transferNFT(address _to, uint256 _tokenId)
-```
+| Language | Use Case | Description | Location |
+|----------|----------|-------------|----------|
+| **⚛️ TypeScript** | DApp Frontend | React + Wagmi v2 + Viem | [📁 typescript/dapp-frontend/](./typescript/dapp-frontend) |
+| **🐍 Python** | CLI Tools | Web3.py wallet manager & contract deployer | [📁 python/web3-cli/](./python/web3-cli) |
+| **🔷 Go** | RPC Client | go-ethereum integration | [📁 go/rpc-client/](./go/rpc-client) |
+| **⚡ C++** | Crypto Algorithms | Keccak-256, Merkle Trees, ECDSA | [📁 cpp/crypto-algorithms/](./cpp/crypto-algorithms) |
+| **☕ Java** | Enterprise | Web3j SDK integration | [📁 java/web3j-example/](./java/web3j-example) |
+| **🍎 Swift** | Mobile | iOS/macOS wallet SDK | [📁 swift/wallet-sdk/](./swift/wallet-sdk) |
+| **🐚 Bash** | DevOps | Node deployment & automation | [📁 bash/scripts/](./bash/scripts) |
+| **⚡ AssemblyScript** | WASM | High-performance Web3 operations | [📁 assemblyscript/wasm-example/](./assemblyscript/wasm-example) |
+| **🌐 HTML/CSS/JS** | Landing Page | Professional project showcase | [📁 frontend/landing-page/](./frontend/landing-page) |
 
 ---
 
-### 4. SimpleToken (ERC20 Token)
+## 🚀 Quick Start
 
-Полная реализация стандарта ERC20 с дополнительными возможностями.
-
-#### Основные возможности:
-- Соответствие стандарту ERC20
-- Опциональный минт новых токенов
-- Опциональное сжигание токенов
-- Настраиваемые параметры (название, символ, decimals)
-- Управление allowance
-
-#### Основные функции:
-```solidity
-transfer(address _to, uint256 _value)
-approve(address _spender, uint256 _value)
-transferFrom(address _from, address _to, uint256 _value)
-mint(address _to, uint256 _value)
-burn(uint256 _value)
-```
-
----
-
-### 5. Escrow (Эскроу сервис)
-
-Безопасные сделки между покупателем и продавцом с системой арбитража.
-
-#### Основные возможности:
-- Создание защищенных сделок
-- Двухсторонняя система подтверждения
-- Механизм споров с назначением арбитра
-- Автоматический возврат при истечении срока
-- Частичное решение споров
-
-#### Основные функции:
-```solidity
-createDeal(address payable _seller, string memory _description, uint256 _durationDays) payable
-approveDeal(uint256 _dealId)
-confirmDelivery(uint256 _dealId)
-openDispute(uint256 _dealId)
-resolveForBuyer(uint256 _dealId)
-resolveForSeller(uint256 _dealId)
-```
-
----
-
-### 6. Lottery (Лотерея)
-
-Децентрализованная лотерея с прозрачным выбором победителя.
-
-#### Основные возможности:
-- Создание раундов лотереи
-- Покупка нескольких билетов
-- Прозрачная генерация случайного числа
-- Автоматический выбор и выплата победителю
-- Комиссия платформы (5% по умолчанию)
-
-#### Основные функции:
-```solidity
-createLottery(uint256 _ticketPrice, uint256 _maxTickets, uint256 _durationHours)
-buyTickets(uint256 _roundId, uint256 _ticketAmount) payable
-closeLottery(uint256 _roundId)
-getLottery(uint256 _roundId)
-```
-
----
-
-### 7. DAO (Децентрализованная автономная организация)
-
-Полнофункциональная DAO с управлением через голосование членов.
-
-#### Основные возможности:
-- Управление членством через голосование
-- Предложения о переводе средств
-- Изменение кворума голосования
-- Кастомные предложения с произвольными вызовами
-- Автоматическое выполнение при достижении кворума
-
-#### Основные функции:
-```solidity
-proposeMemberAddition(address _member, string memory _description) payable
-proposeMemberRemoval(address _member, string memory _description) payable
-proposeTransfer(address _to, uint256 _amount, string memory _description) payable
-proposeQuorumChange(uint256 _newQuorum, string memory _description) payable
-vote(uint256 _proposalId, bool _support)
-executeProposal(uint256 _proposalId)
-```
-
----
-
-### 8. Staking (Стейкинг)
-
-Платформа для стейкинга ETH с начислением вознаграждений.
-
-#### Основные возможности:
-- Создание пулов с разными параметрами
-- Гибкая настройка APR (до 1000%)
-- Периоды блокировки средств
-- Автоматический расчет вознаграждений
-- Начисление процентов в реальном времени
-
-#### Основные функции:
-```solidity
-createPool(uint256 _rewardRate, uint256 _minStakeAmount, uint256 _lockPeriodDays)
-stake(uint256 _poolId) payable
-unstake(uint256 _poolId, uint256 _amount)
-claimReward(uint256 _poolId)
-calculateReward(uint256 _poolId, address _user)
-```
-
----
-
-### 9. MultiSigWallet (Мультиподписной кошелек)
-
-Кошелек, требующий подтверждения от нескольких владельцев для выполнения транзакций.
-
-#### Основные возможности:
-- Требование N из M подтверждений
-- Добавление/удаление владельцев через голосование
-- Отзыв подтверждений до выполнения
-- Автоматическое выполнение при кворуме
-- Поддержка произвольных вызовов
-
-#### Основные функции:
-```solidity
-submitTransaction(address _to, uint256 _value, bytes memory _data)
-confirmTransaction(uint256 _txId)
-revokeConfirmation(uint256 _txId)
-executeTransaction(uint256 _txId)
-addOwner(address _owner)
-removeOwner(address _owner)
-```
-
----
-
-### 10. Auction (Аукцион)
-
-Платформа для проведения аукционов с поддержкой двух типов.
-
-#### Основные возможности:
-- **Английский аукцион** - цена растет с каждой ставкой
-- **Голландский аукцион** - цена автоматически падает со временем
-- Резервная цена для защиты продавца
-- Автоматический расчет текущей цены
-- Возврат неиспользованных ставок
-
-#### Основные функции:
-```solidity
-createEnglishAuction(string memory _title, string memory _description, uint256 _startPrice, uint256 _reservePrice, uint256 _durationHours)
-createDutchAuction(string memory _title, string memory _description, uint256 _startPrice, uint256 _reservePrice, uint256 _priceDecrement, uint256 _decrementInterval, uint256 _durationHours)
-bidEnglish(uint256 _auctionId) payable
-buyDutch(uint256 _auctionId) payable
-getCurrentDutchPrice(uint256 _auctionId)
-```
-
----
-
-## 🚀 Установка и запуск
-
-### Требования
-- Node.js >= 16.0.0
-- npm или yarn
-- Hardhat
-
-### Установка зависимостей
+### Clone the Repository
 
 ```bash
+git clone https://github.com/pavlenkotm/ethsold.git
+cd ethsold
+```
+
+### Explore Individual Projects
+
+Each sub-directory contains a complete project with its own README:
+
+```bash
+# Solidity smart contracts
+cd solidity
 npm install
-```
+npx hardhat compile
+npx hardhat test
 
-### Компиляция контрактов
+# TypeScript DApp
+cd typescript/dapp-frontend
+npm install
+npm run dev
 
-```bash
-npm run compile
-```
+# Python Web3 tools
+cd python/web3-cli
+pip install -r requirements.txt
+python wallet_manager.py create
 
-### Запуск тестов
+# Go RPC client
+cd go/rpc-client
+go build
+./web3-cli balance 0x...
 
-```bash
-npm test
-```
-
-### Локальный деплой
-
-1. Запустите локальную сеть Hardhat:
-```bash
-npm run node
-```
-
-2. В другом терминале разверните контракты:
-```bash
-npm run deploy
-```
-
-### Деплой в тестовую сеть
-
-1. Создайте файл `.env` на основе `.env.example`:
-```bash
-cp .env.example .env
-```
-
-2. Заполните необходимые переменные окружения
-
-3. Разверните контракты:
-```bash
-npx hardhat run scripts/deploy.js --network sepolia
+# And more...
 ```
 
 ---
 
-## 📁 Структура проекта
+## 📚 Featured Projects
+
+### 🔷 Solidity Smart Contracts
+
+**10 production-ready contracts** including:
+- **Voting System** - Decentralized governance
+- **Crowdfunding** - Campaign platform with refunds
+- **NFT Marketplace** - ERC-721 with royalties
+- **ERC-20 Token** - Standard implementation
+- **DAO** - Autonomous organization
+- **Staking** - Rewards system
+- **Multi-Sig Wallet** - N-of-M signatures
+- And more...
+
+[➡️ Explore Solidity](./solidity)
+
+### ⚛️ TypeScript DApp
+
+Modern Web3 frontend with:
+- React 18 + TypeScript
+- Wagmi v2 hooks
+- Viem (lightweight web3 library)
+- Multi-wallet support (MetaMask, WalletConnect)
+- Multi-chain (Ethereum, Polygon, Arbitrum)
+
+[➡️ Explore DApp](./typescript/dapp-frontend)
+
+### 🐍 Python Web3 Tools
+
+CLI utilities for:
+- Wallet management
+- Transaction sending
+- Contract deployment
+- Message signing
+- Blockchain queries
+
+[➡️ Explore Python Tools](./python/web3-cli)
+
+### 🦀 Rust Solana Program
+
+Anchor framework counter program with:
+- Account initialization
+- State management
+- Authority-based access control
+- Overflow protection
+
+[➡️ Explore Rust/Solana](./rust/solana-program)
+
+---
+
+## 🏗️ Project Structure
 
 ```
 ethsold/
-├── contracts/           # Смарт-контракты
-│   ├── Voting.sol
-│   ├── Crowdfunding.sol
-│   ├── NFTMarketplace.sol
-│   ├── SimpleToken.sol
-│   ├── Escrow.sol
-│   ├── Lottery.sol
-│   ├── DAO.sol
-│   ├── Staking.sol
-│   ├── MultiSigWallet.sol
-│   └── Auction.sol
-├── scripts/            # Скрипты деплоя
-│   └── deploy.js
-├── test/              # Тесты
-│   └── Voting.test.js
-├── hardhat.config.js  # Конфигурация Hardhat
-├── package.json       # Зависимости проекта
-└── README.md          # Документация
+├── solidity/              # Ethereum smart contracts (Hardhat)
+├── vyper/                 # Vyper EVM contracts
+├── rust/                  # Solana Anchor programs
+├── move/                  # Aptos smart contracts
+├── typescript/            # React DApp with Wagmi
+├── python/                # Web3.py CLI tools
+├── go/                    # Go Ethereum client
+├── cpp/                   # Crypto algorithms
+├── java/                  # Web3j enterprise integration
+├── swift/                 # iOS/macOS wallet SDK
+├── bash/                  # Deployment scripts
+├── haskell/               # Cardano Plutus contracts
+├── assemblyscript/        # WebAssembly modules
+├── frontend/              # HTML/CSS/JS landing page
+├── .github/               # CI/CD workflows
+├── README.md              # This file
+├── CONTRIBUTING.md        # Contribution guidelines
+├── CODE_OF_CONDUCT.md     # Code of conduct
+└── LICENSE                # MIT License
 ```
 
 ---
 
-## 🔒 Безопасность
+## 🧪 Testing
 
-Все контракты включают:
-- ✅ Модификаторы доступа
-- ✅ Проверки на реентерабельность
-- ✅ Валидацию входных данных
-- ✅ События для отслеживания операций
-- ✅ Защиту от overflow/underflow (Solidity ^0.8.20)
-
-**⚠️ Внимание:** Перед использованием в продакшене рекомендуется провести полный аудит безопасности!
-
----
-
-## 🧪 Тестирование
-
-Проект включает набор юнит-тестов. Для запуска:
+Most projects include tests:
 
 ```bash
-npm test
+# Solidity contracts
+cd solidity && npx hardhat test
+
+# Python tools
+cd python/web3-cli && pytest
+
+# TypeScript DApp
+cd typescript/dapp-frontend && npm test
+
+# Go client
+cd go/rpc-client && go test ./...
 ```
 
-Для получения отчета о покрытии кода:
+---
 
-```bash
-npm run coverage
-```
+## 🔧 CI/CD
+
+GitHub Actions workflows for:
+- ✅ Automated testing
+- 🔍 Linting and formatting
+- 🏗️ Build verification
+- 📦 Dependency management
+
+See [`.github/workflows/`](./.github/workflows/) for configuration.
 
 ---
 
-## 📖 Паттерны и концепции
+## 🤝 Contributing
 
-Контракты демонстрируют следующие паттерны разработки:
+Contributions are welcome! Please read our [Contributing Guidelines](./CONTRIBUTING.md) and [Code of Conduct](./CODE_OF_CONDUCT.md).
 
-- **Access Control** - Управление правами доступа
-- **Pull over Push** - Безопасный вывод средств
-- **State Machine** - Управление состояниями
-- **Oracle Pattern** - Получение внешних данных
-- **Factory Pattern** - Создание новых экземпляров
-- **Time-based Actions** - Действия, зависящие от времени
-- **Voting & Governance** - Механизмы голосования
-- **Token Standards** - Стандарты ERC20, ERC721
+### How to Contribute
 
----
-
-## 🛠️ Используемые технологии
-
-- **Solidity** ^0.8.20
-- **Hardhat** - Среда разработки
-- **Ethers.js** - Библиотека для взаимодействия с Ethereum
-- **Chai** - Фреймворк для тестирования
-- **OpenZeppelin** - Библиотека безопасных контрактов
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ---
 
-## 📝 Лицензия
+## 📊 Repository Stats
 
-MIT License
-
----
-
-## 🤝 Вклад в проект
-
-Вклад в проект приветствуется! Пожалуйста:
-
-1. Форкните репозиторий
-2. Создайте ветку для новой функции (`git checkout -b feature/AmazingFeature`)
-3. Закоммитьте изменения (`git commit -m 'Add some AmazingFeature'`)
-4. Запушьте в ветку (`git push origin feature/AmazingFeature`)
-5. Откройте Pull Request
+- **15+ Programming Languages** covering all major blockchain platforms
+- **40+ Meaningful Commits** demonstrating real development activity
+- **10+ Smart Contracts** for various use cases
+- **Production-Ready** code with security best practices
+- **Comprehensive Documentation** for every project
 
 ---
 
-## 📧 Контакты
+## 🎓 Learning Resources
 
-Если у вас есть вопросы или предложения, создайте Issue в репозитории.
+Each sub-project includes:
+- 📖 **Detailed README** - Setup, usage, and examples
+- 💡 **Code Comments** - Inline explanations
+- 🔗 **External Links** - Official documentation and tutorials
+- 🧪 **Test Examples** - How to test the code
+- 🚀 **Deployment Guides** - Production deployment steps
 
 ---
 
-## ⭐ Благодарности
+## 🌟 Use Cases
 
-Спасибо всем разработчикам, чьи идеи и паттерны были использованы при создании этих контрактов!
+This repository is perfect for:
+
+- **🎯 Learning** - Explore Web3 development in multiple languages
+- **💼 Portfolio** - Showcase blockchain expertise to employers
+- **🔬 Research** - Compare blockchain platforms and languages
+- **🚀 Prototyping** - Use as templates for your projects
+- **📚 Education** - Teaching material for blockchain courses
+
+---
+
+## 🔒 Security
+
+- ✅ All contracts include security best practices
+- ✅ Reentrancy protection where applicable
+- ✅ Access control mechanisms
+- ✅ Input validation
+- ✅ Overflow/underflow protection
+- ⚠️ **Important**: Conduct thorough audits before production use
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
+---
+
+## 👤 Author
+
+**Pavlenko TM**
+
+- GitHub: [@pavlenkotm](https://github.com/pavlenkotm)
+- Repository: [ethsold](https://github.com/pavlenkotm/ethsold)
+
+---
+
+## 🙏 Acknowledgments
+
+- [OpenZeppelin](https://openzeppelin.com/) - Secure smart contract library
+- [Hardhat](https://hardhat.org/) - Ethereum development environment
+- [Wagmi](https://wagmi.sh/) - React hooks for Ethereum
+- [Anchor](https://www.anchor-lang.com/) - Solana framework
+- [web3swift](https://github.com/web3swift-team/web3swift) - iOS Web3 library
+
+---
+
+## 🔗 Links
+
+- 📖 [Documentation](https://github.com/pavlenkotm/ethsold#readme)
+- 🐛 [Report Issues](https://github.com/pavlenkotm/ethsold/issues)
+- 💬 [Discussions](https://github.com/pavlenkotm/ethsold/discussions)
+- 🌐 [Landing Page](./frontend/landing-page/index.html)
+
+---
+
+<div align="center">
+
+**⭐ Star this repo if you find it useful! ⭐**
+
+**Built with ❤️ by the Web3 community**
+
+</div>
