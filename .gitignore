@@ -1,38 +1,87 @@
-# Object file
-*.o
-
-# Ada Library Information
-*.ali
-
-# Node modules
+# Node modules and dependencies
 node_modules/
+**/node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
-# Hardhat files
-cache/
+# Production builds
+build/
+dist/
+out/
+target/
+*.wasm
 artifacts/
 
-# Environment variables
+# Environment files
 .env
+.env.local
+.env.production
+*.env
 
-# TypeScript
-*.tsbuildinfo
-
-# Coverage
-coverage/
-coverage.json
-
-# Hardhat local network
-.hardhat/
-
-# VS Code
+# IDE files
 .vscode/
-
-# Mac
+.idea/
+*.swp
+*.swo
+*~
 .DS_Store
 
 # Logs
 *.log
+npm-debug.log*
+yarn-debug.log*
 
-# Build files
-dist/
-build/
+# Hardhat
+cache/
+typechain/
+typechain-types/
+.openzeppelin/
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Rust
+Cargo.lock
+**/*.rs.bk
+
+# Go
+*.exe
+*.test
+*.out
+
+# Java
+*.class
+*.jar
+target/
+
+# Swift
+.build/
+*.xcodeproj
+DerivedData/
+
+# C++
+*.o
+*.obj
+cmake-build-*/
+CMakeCache.txt
+
+# Keys and secrets
+*.pem
+*.key
+privateKey.txt
+mnemonic.txt
+
+# Ethereum data
+ethereum-data/
+geth/
+
+# Temporary
+*.tmp
+*.bak
