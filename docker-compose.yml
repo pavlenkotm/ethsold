@@ -1,0 +1,141 @@
+version: '3.8'
+
+services:
+  # Local Ethereum node (Hardhat)
+  hardhat-node:
+    image: node:18-alpine
+    container_name: ethsold-hardhat
+    working_dir: /app
+    volumes:
+      - ./solidity:/app
+    ports:
+      - "8545:8545"
+    command: >
+      sh -c "npm install && npx hardhat node"
+    networks:
+      - ethsold-network
+
+  # Solidity development environment
+  solidity-dev:
+    image: node:18-alpine
+    container_name: ethsold-solidity-dev
+    working_dir: /app
+    volumes:
+      - ./solidity:/app
+    environment:
+      - ETH_RPC_URL=http://hardhat-node:8545
+    command: sh -c "npm install && tail -f /dev/null"
+    depends_on:
+      - hardhat-node
+    networks:
+      - ethsold-network
+
+  # TypeScript DApp frontend
+  dapp-frontend:
+    image: node:18-alpine
+    container_name: ethsold-dapp-frontend
+    working_dir: /app
+    volumes:
+      - ./typescript/dapp-frontend:/app
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+    command: sh -c "npm install && npm run dev -- --host"
+    networks:
+      - ethsold-network
+
+  # Python development environment
+  python-dev:
+    image: python:3.11-slim
+    container_name: ethsold-python-dev
+    working_dir: /app
+    volumes:
+      - ./python:/app
+    environment:
+      - ETH_RPC_URL=http://hardhat-node:8545
+      - PYTHONUNBUFFERED=1
+    command: >
+      sh -c "pip install -r web3-cli/requirements.txt &&
+             tail -f /dev/null"
+    depends_on:
+      - hardhat-node
+    networks:
+      - ethsold-network
+
+  # Go development environment
+  go-dev:
+    image: golang:1.21-alpine
+    container_name: ethsold-go-dev
+    working_dir: /app
+    volumes:
+      - ./go:/app
+    environment:
+      - ETH_RPC_URL=http://hardhat-node:8545
+      - CGO_ENABLED=1
+    command: sh -c "apk add --no-cache gcc musl-dev && tail -f /dev/null"
+    depends_on:
+      - hardhat-node
+    networks:
+      - ethsold-network
+
+  # Vyper development environment
+  vyper-dev:
+    image: python:3.11-slim
+    container_name: ethsold-vyper-dev
+    working_dir: /app
+    volumes:
+      - ./vyper:/app
+    command: >
+      sh -c "pip install -r requirements.txt &&
+             tail -f /dev/null"
+    networks:
+      - ethsold-network
+
+  # Rust/Solana development environment
+  rust-dev:
+    image: rust:1.75-slim
+    container_name: ethsold-rust-dev
+    working_dir: /app
+    volumes:
+      - ./rust:/app
+    command: sh -c "tail -f /dev/null"
+    networks:
+      - ethsold-network
+
+  # Documentation server
+  docs-server:
+    image: nginx:alpine
+    container_name: ethsold-docs
+    volumes:
+      - ./docs:/usr/share/nginx/html:ro
+      - ./README.md:/usr/share/nginx/html/README.md:ro
+    ports:
+      - "8080:80"
+    networks:
+      - ethsold-network
+
+  # Frontend landing page
+  frontend:
+    image: node:18-alpine
+    container_name: ethsold-frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    command: sh -c "npm install && npm run dev -- --host --port 3000"
+    networks:
+      - ethsold-network
+
+networks:
+  ethsold-network:
+    driver: bridge
+
+volumes:
+  hardhat-data:
+  node-modules-solidity:
+  node-modules-frontend:
+  node-modules-dapp:

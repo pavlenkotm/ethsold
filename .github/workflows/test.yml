@@ -26,8 +26,15 @@ jobs:
       - name: Compile contracts
         run: cd solidity && npx hardhat compile
 
-      - name: Run tests
-        run: cd solidity && npx hardhat test
+      - name: Run tests with coverage
+        run: cd solidity && npx hardhat coverage
+
+      - name: Upload Solidity coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./solidity/coverage/coverage-final.json
+          flags: solidity
+          name: solidity-coverage
 
   python-tests:
     name: Python Tests
@@ -44,7 +51,19 @@ jobs:
         run: |
           cd python/web3-cli
           pip install -r requirements.txt
-          pip install pytest
+          pip install pytest pytest-cov
+
+      - name: Run tests with coverage
+        run: |
+          cd python/web3-cli
+          pytest --cov=. --cov-report=xml --cov-report=html
+
+      - name: Upload Python coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./python/web3-cli/coverage.xml
+          flags: python
+          name: python-coverage
 
       - name: Lint with flake8
         run: |
@@ -66,10 +85,20 @@ jobs:
         run: cd typescript/dapp-frontend && npm ci || npm install
 
       - name: Type check
-        run: cd typescript/dapp-frontend && npm run typecheck || echo "Typecheck not configured"
+        run: cd typescript/dapp-frontend && npm run typecheck
 
       - name: Lint
-        run: cd typescript/dapp-frontend && npm run lint || echo "Lint not configured"
+        run: cd typescript/dapp-frontend && npm run lint
+
+      - name: Run tests with coverage
+        run: cd typescript/dapp-frontend && npm run test:coverage
+
+      - name: Upload TypeScript coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./typescript/dapp-frontend/coverage/coverage-final.json
+          flags: typescript
+          name: typescript-coverage
 
   go-tests:
     name: Go Tests
@@ -85,8 +114,15 @@ jobs:
       - name: Build
         run: cd go/rpc-client && go build -v .
 
-      - name: Run tests
-        run: cd go/rpc-client && go test -v ./...
+      - name: Run tests with coverage
+        run: cd go/rpc-client && go test -v -coverprofile=coverage.out -covermode=atomic ./...
+
+      - name: Upload Go coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./go/rpc-client/coverage.out
+          flags: go
+          name: go-coverage
 
   code-quality:
     name: Code Quality
