@@ -111,7 +111,7 @@ contract Escrow {
             arbitrator: address(0),
             amount: msg.value - fee,
             fee: fee,
-            status: Status.Funded,
+            status: Status.Created,
             description: _description,
             createdAt: block.timestamp,
             deadline: block.timestamp + (_durationDays * 1 days),
@@ -138,9 +138,12 @@ contract Escrow {
         external
         dealExists(_dealId)
         onlyBuyer(_dealId)
-        inStatus(_dealId, Status.Funded)
     {
         Deal storage deal = deals[_dealId];
+        require(
+            deal.status == Status.Created || deal.status == Status.Funded,
+            "Invalid deal status"
+        );
         deal.buyerApproved = true;
 
         _completeDealIfApproved(_dealId);
@@ -154,9 +157,12 @@ contract Escrow {
         external
         dealExists(_dealId)
         onlySeller(_dealId)
-        inStatus(_dealId, Status.Funded)
     {
         Deal storage deal = deals[_dealId];
+        require(
+            deal.status == Status.Created || deal.status == Status.Funded,
+            "Invalid deal status"
+        );
         deal.sellerApproved = true;
 
         _completeDealIfApproved(_dealId);
@@ -172,8 +178,10 @@ contract Escrow {
             deal.status = Status.Completed;
 
             // Перевод средств продавцу
-            deal.seller.transfer(deal.amount);
-            platformOwner.transfer(deal.fee);
+            (bool successSeller, ) = deal.seller.call{value: deal.amount}("");
+            require(successSeller, "Seller transfer failed");
+            (bool successFee, ) = platformOwner.call{value: deal.fee}("");
+            require(successFee, "Fee transfer failed");
 
             emit DealCompleted(_dealId);
         }
@@ -186,9 +194,12 @@ contract Escrow {
     function openDispute(uint256 _dealId)
         external
         dealExists(_dealId)
-        inStatus(_dealId, Status.Funded)
     {
         Deal storage deal = deals[_dealId];
+        require(
+            deal.status == Status.Created || deal.status == Status.Funded,
+            "Invalid deal status"
+        );
         require(
             msg.sender == deal.buyer || msg.sender == deal.seller,
             "Only parties can dispute"
@@ -231,8 +242,10 @@ contract Escrow {
         deal.status = Status.Refunded;
 
         // Возврат средств покупателю
-        deal.buyer.transfer(deal.amount);
-        platformOwner.transfer(deal.fee);
+        (bool successBuyer, ) = deal.buyer.call{value: deal.amount}("");
+        require(successBuyer, "Buyer refund failed");
+        (bool successFee, ) = platformOwner.call{value: deal.fee}("");
+        require(successFee, "Fee transfer failed");
 
         emit DealRefunded(_dealId);
     }
@@ -251,8 +264,10 @@ contract Escrow {
         deal.status = Status.Completed;
 
         // Перевод средств продавцу
-        deal.seller.transfer(deal.amount);
-        platformOwner.transfer(deal.fee);
+        (bool successSeller, ) = deal.seller.call{value: deal.amount}("");
+        require(successSeller, "Seller transfer failed");
+        (bool successFee, ) = platformOwner.call{value: deal.fee}("");
+        require(successFee, "Fee transfer failed");
 
         emit DealCompleted(_dealId);
     }
@@ -277,13 +292,16 @@ contract Escrow {
         uint256 sellerAmount = deal.amount - buyerAmount;
 
         if (buyerAmount > 0) {
-            deal.buyer.transfer(buyerAmount);
+            (bool successBuyer, ) = deal.buyer.call{value: buyerAmount}("");
+            require(successBuyer, "Buyer transfer failed");
         }
         if (sellerAmount > 0) {
-            deal.seller.transfer(sellerAmount);
+            (bool successSeller, ) = deal.seller.call{value: sellerAmount}("");
+            require(successSeller, "Seller transfer failed");
         }
 
-        platformOwner.transfer(deal.fee);
+        (bool successFee, ) = platformOwner.call{value: deal.fee}("");
+        require(successFee, "Fee transfer failed");
 
         emit DealCompleted(_dealId);
     }
@@ -314,17 +332,22 @@ contract Escrow {
     function refundExpiredDeal(uint256 _dealId)
         external
         dealExists(_dealId)
-        inStatus(_dealId, Status.Funded)
     {
         Deal storage deal = deals[_dealId];
+        require(
+            deal.status == Status.Created || deal.status == Status.Funded,
+            "Invalid deal status"
+        );
         require(block.timestamp > deal.deadline, "Deal not expired");
         require(!deal.sellerApproved, "Seller already approved");
 
         deal.status = Status.Refunded;
 
         // Возврат средств покупателю
-        deal.buyer.transfer(deal.amount);
-        platformOwner.transfer(deal.fee);
+        (bool successBuyer, ) = deal.buyer.call{value: deal.amount}("");
+        require(successBuyer, "Buyer refund failed");
+        (bool successFee, ) = platformOwner.call{value: deal.fee}("");
+        require(successFee, "Fee transfer failed");
 
         emit DealRefunded(_dealId);
     }

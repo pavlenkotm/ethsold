@@ -137,12 +137,12 @@ contract Staking {
             uint256 pending = calculateReward(_poolId, msg.sender);
             userStake.rewardDebt += pending;
         } else {
-            // Первый стейк - добавляем в список пулов пользователя
+            // Первый стейк - добавляем в список пулов пользователя и устанавливаем startTime
             userPools[msg.sender].push(_poolId);
+            userStake.startTime = block.timestamp;
         }
 
         userStake.amount += msg.value;
-        userStake.startTime = block.timestamp;
         userStake.lastClaimTime = block.timestamp;
 
         pool.totalStaked += msg.value;
@@ -178,7 +178,8 @@ contract Staking {
         pool.totalStaked -= _amount;
 
         // Перевод средств пользователю
-        payable(msg.sender).transfer(_amount);
+        (bool success, ) = payable(msg.sender).call{value: _amount}("");
+        require(success, "Unstake transfer failed");
 
         emit Unstaked(_poolId, msg.sender, _amount);
     }
@@ -203,7 +204,8 @@ contract Staking {
 
         totalRewardsDistributed += reward;
 
-        payable(msg.sender).transfer(reward);
+        (bool success, ) = payable(msg.sender).call{value: reward}("");
+        require(success, "Reward transfer failed");
 
         emit RewardClaimed(_poolId, msg.sender, reward);
     }
@@ -238,7 +240,8 @@ contract Staking {
         uint256 totalAmount = stakedAmount + reward;
         require(address(this).balance >= totalAmount, "Insufficient contract balance");
 
-        payable(msg.sender).transfer(totalAmount);
+        (bool success, ) = payable(msg.sender).call{value: totalAmount}("");
+        require(success, "Unstake and claim transfer failed");
 
         emit Unstaked(_poolId, msg.sender, stakedAmount);
         emit RewardClaimed(_poolId, msg.sender, reward);
@@ -382,7 +385,8 @@ contract Staking {
      */
     function emergencyWithdraw(uint256 _amount) external onlyOwner {
         require(address(this).balance >= _amount, "Insufficient balance");
-        payable(owner).transfer(_amount);
+        (bool success, ) = payable(owner).call{value: _amount}("");
+        require(success, "Emergency withdraw failed");
     }
 
     /**

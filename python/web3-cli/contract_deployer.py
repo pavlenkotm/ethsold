@@ -5,8 +5,7 @@ Smart Contract Deployer - Deploy and interact with Ethereum contracts
 
 from web3 import Web3
 from eth_account import Account
-from solcx import compile_source, install_solc
-import json
+from solcx import compile_source, install_solc, get_installed_solc_versions
 
 
 class ContractDeployer:
@@ -20,7 +19,7 @@ class ContractDeployer:
         if not self.w3.is_connected():
             raise ConnectionError("Failed to connect to Ethereum node")
 
-    def compile_contract(self, source_code: str, contract_name: str) -> tuple:
+    def compile_contract(self, source_code: str, contract_name: str) -> tuple[list, str]:
         """
         Compile Solidity source code
 
@@ -31,8 +30,13 @@ class ContractDeployer:
         Returns:
             Tuple of (abi, bytecode)
         """
-        # Install specific Solidity version if needed
-        install_solc('0.8.20')
+        # Install specific Solidity version if needed (only if not already installed)
+        from packaging import version as pkg_version
+        solc_version = '0.8.20'
+        installed_versions = get_installed_solc_versions()
+        if not any(str(v) == solc_version for v in installed_versions):
+            print(f"Installing Solidity compiler {solc_version}...")
+            install_solc(solc_version)
 
         compiled_sol = compile_source(
             source_code,
@@ -42,7 +46,7 @@ class ContractDeployer:
         contract_interface = compiled_sol[f'<stdin>:{contract_name}']
         return contract_interface['abi'], contract_interface['bin']
 
-    def deploy_contract(self, abi: list, bytecode: str, *constructor_args) -> str:
+    def deploy_contract(self, abi: list[dict], bytecode: str, *constructor_args) -> str:
         """
         Deploy a smart contract
 
@@ -81,11 +85,22 @@ class ContractDeployer:
     def call_function(
         self,
         contract_address: str,
-        abi: list,
+        abi: list[dict],
         function_name: str,
         *args
-    ):
-        """Call a read-only contract function"""
+    ) -> any:
+        """
+        Call a read-only contract function
+
+        Args:
+            contract_address: Contract address
+            abi: Contract ABI
+            function_name: Function name to call
+            *args: Function arguments
+
+        Returns:
+            Function return value (type depends on contract function)
+        """
         contract = self.w3.eth.contract(
             address=self.w3.to_checksum_address(contract_address),
             abi=abi

@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
 /**
  * @title NFTMarketplace
  * @dev Маркетплейс для торговли NFT токенами
  */
-contract NFTMarketplace {
+contract NFTMarketplace is ReentrancyGuard {
     // Структура NFT
     struct NFT {
         uint256 tokenId;
@@ -159,6 +161,7 @@ contract NFTMarketplace {
     function buyNFT(uint256 _tokenId)
         external
         payable
+        nonReentrant
         tokenExists(_tokenId)
     {
         NFT storage nft = nfts[_tokenId];
@@ -183,13 +186,17 @@ contract NFTMarketplace {
         ownedTokens[msg.sender].push(_tokenId);
 
         // Переводы средств
-        marketplaceOwner.transfer(marketFee);
-        nft.creator.transfer(royaltyFee);
-        seller.transfer(sellerAmount);
+        (bool successMarket, ) = marketplaceOwner.call{value: marketFee}("");
+        require(successMarket, "Marketplace fee transfer failed");
+        (bool successCreator, ) = nft.creator.call{value: royaltyFee}("");
+        require(successCreator, "Creator royalty transfer failed");
+        (bool successSeller, ) = seller.call{value: sellerAmount}("");
+        require(successSeller, "Seller transfer failed");
 
         // Возврат излишка
         if (msg.value > salePrice) {
-            payable(msg.sender).transfer(msg.value - salePrice);
+            (bool successRefund, ) = payable(msg.sender).call{value: msg.value - salePrice}("");
+            require(successRefund, "Refund transfer failed");
         }
 
         emit NFTSold(_tokenId, seller, msg.sender, salePrice);
@@ -223,6 +230,7 @@ contract NFTMarketplace {
      */
     function acceptOffer(uint256 _tokenId, uint256 _offerIndex)
         external
+        nonReentrant
         onlyTokenOwner(_tokenId)
         tokenExists(_tokenId)
     {
@@ -253,15 +261,19 @@ contract NFTMarketplace {
         for (uint256 i = 0; i < offers[_tokenId].length; i++) {
             if (offers[_tokenId][i].active && i != _offerIndex) {
                 // Возврат средств остальным
-                payable(offers[_tokenId][i].buyer).transfer(offers[_tokenId][i].price);
+                (bool successRefund, ) = payable(offers[_tokenId][i].buyer).call{value: offers[_tokenId][i].price}("");
+                require(successRefund, "Offer refund failed");
             }
             offers[_tokenId][i].active = false;
         }
 
         // Переводы средств
-        marketplaceOwner.transfer(marketFee);
-        nft.creator.transfer(royaltyFee);
-        seller.transfer(sellerAmount);
+        (bool successMarket, ) = marketplaceOwner.call{value: marketFee}("");
+        require(successMarket, "Marketplace fee transfer failed");
+        (bool successCreator, ) = nft.creator.call{value: royaltyFee}("");
+        require(successCreator, "Creator royalty transfer failed");
+        (bool successSeller, ) = seller.call{value: sellerAmount}("");
+        require(successSeller, "Seller transfer failed");
 
         emit OfferAccepted(_tokenId, buyer, offerPrice);
         emit NFTSold(_tokenId, seller, buyer, offerPrice);
@@ -274,6 +286,7 @@ contract NFTMarketplace {
      */
     function cancelOffer(uint256 _tokenId, uint256 _offerIndex)
         external
+        nonReentrant
         tokenExists(_tokenId)
     {
         require(_offerIndex < offers[_tokenId].length, "Invalid offer index");
@@ -283,7 +296,8 @@ contract NFTMarketplace {
         require(offer.active, "Offer not active");
 
         offer.active = false;
-        payable(msg.sender).transfer(offer.price);
+        (bool success, ) = payable(msg.sender).call{value: offer.price}("");
+        require(success, "Offer cancel transfer failed");
     }
 
     /**

@@ -141,9 +141,9 @@ func VerifySignature(message string, signatureHex string, expectedAddress string
 		return false, err
 	}
 
-	// Remove recovery ID
-	if len(signature) == 65 {
-		signature = signature[:64]
+	// Signature must be 65 bytes (32 + 32 + 1) including recovery ID
+	if len(signature) != 65 {
+		return false, fmt.Errorf("invalid signature length: expected 65 bytes, got %d", len(signature))
 	}
 
 	publicKeyBytes, err := crypto.Ecrecover(hash.Bytes(), signature)
@@ -224,7 +224,10 @@ Environment:
 			log.Fatal("Usage: go run main.go send <key> <to> <amount_wei>")
 		}
 		amount := new(big.Int)
-		amount.SetString(os.Args[4], 10)
+		ok := amount.SetString(os.Args[4], 10)
+		if !ok {
+			log.Fatalf("Invalid amount: %s (must be a valid number)", os.Args[4])
+		}
 
 		txHash, err := client.SendTransaction(os.Args[2], os.Args[3], amount)
 		if err != nil {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, FormEvent } from 'react'
 import { useAccount, useBalance, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { formatEther, parseEther } from 'viem'
 import { WalletConnect } from './components/WalletConnect'
@@ -82,7 +82,7 @@ function App() {
       hash,
     })
 
-  const handleTransfer = async (e: React.FormEvent) => {
+  const handleTransfer = async (e: FormEvent) => {
     e.preventDefault()
     if (!recipient || !amount || !tokenAddress) return
 

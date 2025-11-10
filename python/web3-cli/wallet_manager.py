@@ -7,9 +7,8 @@ Demonstrates Web3.py usage for blockchain interactions
 import sys
 from web3 import Web3
 from eth_account import Account
-from eth_typing import Address
+from eth_account.messages import encode_defunct
 from decimal import Decimal
-import json
 import os
 
 
@@ -140,18 +139,19 @@ class WalletManager:
 
     def sign_message(self, private_key: str, message: str) -> str:
         """
-        Sign a message with private key
+        Sign a message with private key using EIP-191 standard
 
         Args:
             private_key: Signer's private key
             message: Message to sign
 
         Returns:
-            Signature
+            Signature (hex string)
         """
         account = Account.from_key(private_key)
-        message_hash = self.w3.keccak(text=message)
-        signed = account.signHash(message_hash)
+        # Use EIP-191 message encoding (same format as MetaMask)
+        message_encoded = encode_defunct(text=message)
+        signed = account.sign_message(message_encoded)
         return signed.signature.hex()
 
     def verify_signature(
@@ -161,20 +161,23 @@ class WalletManager:
         expected_address: str
     ) -> bool:
         """
-        Verify a message signature
+        Verify a message signature using EIP-191 standard
 
         Args:
             message: Original message
-            signature: Signature to verify
+            signature: Signature to verify (hex string with or without 0x prefix)
             expected_address: Expected signer address
 
         Returns:
             True if signature is valid
         """
-        message_hash = self.w3.keccak(text=message)
+        # Use EIP-191 message encoding (same format as MetaMask)
+        message_encoded = encode_defunct(text=message)
+        # Remove 0x prefix if present
+        sig_bytes = bytes.fromhex(signature[2:] if signature.startswith('0x') else signature)
         recovered_address = Account.recover_message(
-            message_hash,
-            signature=bytes.fromhex(signature[2:])
+            message_encoded,
+            signature=sig_bytes
         )
         return recovered_address.lower() == expected_address.lower()
 

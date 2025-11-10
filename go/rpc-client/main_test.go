@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/ecdsa"
 	"math/big"
 	"testing"
 
@@ -52,7 +53,10 @@ func TestVerifySignature(t *testing.T) {
 
 	privateKeyHex := common.Bytes2Hex(crypto.FromECDSA(privateKey))
 	publicKey := privateKey.Public()
-	publicKeyECDSA, _ := publicKey.(*crypto.PublicKey)
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+	if !ok {
+		t.Fatal("Failed to cast public key to ECDSA")
+	}
 	address := crypto.PubkeyToAddress(*publicKeyECDSA).Hex()
 
 	message := "Test message for verification"

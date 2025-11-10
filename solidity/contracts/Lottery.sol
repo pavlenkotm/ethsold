@@ -127,7 +127,7 @@ contract Lottery {
         require(block.timestamp < lottery.endTime, "Lottery has ended");
         require(_ticketAmount > 0, "Must buy at least one ticket");
         require(
-            lottery.participants.length + _ticketAmount <= lottery.maxTickets,
+            lottery.participants.length + _ticketAmount < lottery.maxTickets,
             "Not enough tickets available"
         );
 
@@ -162,7 +162,8 @@ contract Lottery {
 
         // Возврат излишка
         if (msg.value > totalCost) {
-            payable(msg.sender).transfer(msg.value - totalCost);
+            (bool successRefund, ) = payable(msg.sender).call{value: msg.value - totalCost}("");
+            require(successRefund, "Refund transfer failed");
         }
 
         emit TicketPurchased(_roundId, msg.sender, _ticketAmount);
@@ -236,8 +237,10 @@ contract Lottery {
         uint256 prize = lottery.totalPrize - fee;
 
         // Перевод средств
-        owner.transfer(fee);
-        payable(winnerAddress).transfer(prize);
+        (bool successFee, ) = owner.call{value: fee}("");
+        require(successFee, "Fee transfer failed");
+        (bool successWinner, ) = payable(winnerAddress).call{value: prize}("");
+        require(successWinner, "Winner transfer failed");
 
         emit WinnerSelected(_roundId, winnerAddress, prize);
         emit PrizeWithdrawn(_roundId, winnerAddress, prize);
@@ -350,6 +353,7 @@ contract Lottery {
      * @dev Экстренный вывод средств (только владелец)
      */
     function emergencyWithdraw() external onlyOwner {
-        owner.transfer(address(this).balance);
+        (bool success, ) = owner.call{value: address(this).balance}("");
+        require(success, "Emergency withdraw failed");
     }
 }
