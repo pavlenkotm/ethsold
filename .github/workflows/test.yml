@@ -30,7 +30,7 @@ jobs:
         run: cd solidity && npx hardhat coverage
 
       - name: Upload Solidity coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           files: ./solidity/coverage/coverage-final.json
           flags: solidity
@@ -59,7 +59,7 @@ jobs:
           pytest --cov=. --cov-report=xml --cov-report=html
 
       - name: Upload Python coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           files: ./python/web3-cli/coverage.xml
           flags: python
@@ -94,7 +94,7 @@ jobs:
         run: cd typescript/dapp-frontend && npm run test:coverage
 
       - name: Upload TypeScript coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           files: ./typescript/dapp-frontend/coverage/coverage-final.json
           flags: typescript
@@ -118,7 +118,7 @@ jobs:
         run: cd go/rpc-client && go test -v -coverprofile=coverage.out -covermode=atomic ./...
 
       - name: Upload Go coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           files: ./go/rpc-client/coverage.out
           flags: go
