@@ -324,7 +324,7 @@ contract DAO {
         }
 
         // Проверка большинства
-        if (proposal.votesFor <= proposal.votesAgainst) {
+        if (proposal.votesFor < proposal.votesAgainst) {
             proposal.status = ProposalStatus.Rejected;
             emit ProposalRejected(_proposalId);
             return;
@@ -414,9 +414,12 @@ contract DAO {
         returns (bool)
     {
         if (address(this).balance >= _amount) {
-            payable(_to).transfer(_amount);
-            emit FundsTransferred(_to, _amount);
-            return true;
+            (bool success, ) = payable(_to).call{value: _amount}("");
+            if (success) {
+                emit FundsTransferred(_to, _amount);
+                return true;
+            }
+            return false;
         }
         return false;
     }

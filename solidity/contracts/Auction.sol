@@ -36,7 +36,6 @@ contract Auction {
         uint256 startTime;
         uint256 endTime;
         AuctionStatus status;
-        mapping(address => uint256) bids;
     }
 
     // Переменные состояния
@@ -46,6 +45,8 @@ contract Auction {
 
     mapping(uint256 => AuctionItem) public auctions;
     mapping(address => uint256[]) public userAuctions;
+    // Mapping для хранения ставок: auctionId => bidder => amount
+    mapping(uint256 => mapping(address => uint256)) public auctionBids;
 
     // События
     event AuctionCreated(
@@ -225,7 +226,7 @@ contract Auction {
 
         // Возврат предыдущей ставки
         if (auction.highestBidder != address(0)) {
-            auction.bids[auction.highestBidder] += auction.highestBid;
+            auctionBids[_auctionId][auction.highestBidder] += auction.highestBid;
         }
 
         auction.highestBidder = payable(msg.sender);
@@ -266,12 +267,15 @@ contract Auction {
         uint256 sellerAmount = currentPrice - fee;
 
         // Переводы
-        platformOwner.transfer(fee);
-        auction.seller.transfer(sellerAmount);
+        (bool successFee, ) = platformOwner.call{value: fee}("");
+        require(successFee, "Fee transfer failed");
+        (bool successSeller, ) = auction.seller.call{value: sellerAmount}("");
+        require(successSeller, "Seller transfer failed");
 
         // Возврат излишка
         if (msg.value > currentPrice) {
-            payable(msg.sender).transfer(msg.value - currentPrice);
+            (bool successRefund, ) = payable(msg.sender).call{value: msg.value - currentPrice}("");
+            require(successRefund, "Refund transfer failed");
         }
 
         emit BidPlaced(_auctionId, msg.sender, currentPrice);
@@ -305,14 +309,16 @@ contract Auction {
             uint256 fee = (auction.highestBid * platformFee) / 100;
             uint256 sellerAmount = auction.highestBid - fee;
 
-            platformOwner.transfer(fee);
-            auction.seller.transfer(sellerAmount);
+            (bool successFee, ) = platformOwner.call{value: fee}("");
+            require(successFee, "Fee transfer failed");
+            (bool successSeller, ) = auction.seller.call{value: sellerAmount}("");
+            require(successSeller, "Seller transfer failed");
 
             emit AuctionEnded(_auctionId, auction.highestBidder, auction.highestBid);
         } else {
             // Аукцион не состоялся, возврат ставки
             if (auction.highestBidder != address(0)) {
-                auction.bids[auction.highestBidder] += auction.highestBid;
+                auctionBids[_auctionId][auction.highestBidder] += auction.highestBid;
             }
             emit AuctionCancelled(_auctionId);
         }
@@ -345,13 +351,13 @@ contract Auction {
         external
         auctionExists(_auctionId)
     {
-        AuctionItem storage auction = auctions[_auctionId];
-        uint256 amount = auction.bids[msg.sender];
+        uint256 amount = auctionBids[_auctionId][msg.sender];
 
         require(amount > 0, "No funds to withdraw");
 
-        auction.bids[msg.sender] = 0;
-        payable(msg.sender).transfer(amount);
+        auctionBids[_auctionId][msg.sender] = 0;
+        (bool success, ) = payable(msg.sender).call{value: amount}("");
+        require(success, "Withdraw transfer failed");
 
         emit BidWithdrawn(_auctionId, msg.sender, amount);
     }
@@ -454,7 +460,7 @@ contract Auction {
         auctionExists(_auctionId)
         returns (uint256)
     {
-        return auctions[_auctionId].bids[_user];
+        return auctionBids[_auctionId][_user];
     }
 
     /**

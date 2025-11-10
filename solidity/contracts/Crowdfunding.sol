@@ -179,8 +179,10 @@ contract Crowdfunding {
         uint256 creatorAmount = project.raisedAmount - fee;
 
         // Перевод средств
-        platformOwner.transfer(fee);
-        project.creator.transfer(creatorAmount);
+        (bool successFee, ) = platformOwner.call{value: fee}("");
+        require(successFee, "Fee transfer failed");
+        (bool successCreator, ) = project.creator.call{value: creatorAmount}("");
+        require(successCreator, "Creator transfer failed");
 
         emit FundsWithdrawn(_projectId, project.creator, creatorAmount);
         emit ProjectCompleted(_projectId);
@@ -208,7 +210,8 @@ contract Crowdfunding {
 
         project.contributions[msg.sender] = 0;
 
-        payable(msg.sender).transfer(contributedAmount);
+        (bool success, ) = payable(msg.sender).call{value: contributedAmount}("");
+        require(success, "Refund transfer failed");
 
         emit RefundIssued(_projectId, msg.sender, contributedAmount);
     }
