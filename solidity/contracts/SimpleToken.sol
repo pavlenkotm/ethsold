@@ -3,44 +3,46 @@ pragma solidity ^0.8.20;
 
 /**
  * @title SimpleToken
- * @dev Реализация стандарта ERC20 токена с дополнительными функциями
+ * @dev Implementation of ERC20 token standard with additional features
+ * @notice This contract provides a flexible ERC20 token with optional minting and burning capabilities
  */
 contract SimpleToken {
-    // Основные параметры токена
+    // Core token parameters
     string public name;
     string public symbol;
     uint8 public decimals;
     uint256 public totalSupply;
 
-    // Маппинги
+    // State mappings
     mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint256)) public allowance;
 
-    // Функции для управления
+    // Control parameters
     address public owner;
     bool public mintable;
     bool public burnable;
 
-    // События ERC20
+    // ERC20 events
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Mint(address indexed to, uint256 value);
     event Burn(address indexed from, uint256 value);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-    // Модификаторы
+    // Modifiers
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can call this");
         _;
     }
 
     /**
-     * @dev Конструктор токена
-     * @param _name Название токена
-     * @param _symbol Символ токена
-     * @param _decimals Количество десятичных знаков
-     * @param _initialSupply Начальное предложение
-     * @param _mintable Возможность создания новых токенов
-     * @param _burnable Возможность сжигания токенов
+     * @dev Token constructor
+     * @param _name Token name
+     * @param _symbol Token symbol
+     * @param _decimals Number of decimal places
+     * @param _initialSupply Initial token supply
+     * @param _mintable Whether new tokens can be minted
+     * @param _burnable Whether tokens can be burned
      */
     constructor(
         string memory _name,
@@ -57,7 +59,7 @@ contract SimpleToken {
         burnable = _burnable;
         owner = msg.sender;
 
-        // Создание начального предложения
+        // Mint initial supply
         if (_initialSupply > 0) {
             totalSupply = _initialSupply * 10**uint256(_decimals);
             balanceOf[msg.sender] = totalSupply;
@@ -66,9 +68,10 @@ contract SimpleToken {
     }
 
     /**
-     * @dev Перевод токенов
-     * @param _to Адрес получателя
-     * @param _value Количество токенов
+     * @dev Transfer tokens to a specified address
+     * @param _to Recipient address
+     * @param _value Amount of tokens to transfer
+     * @return success True if the operation was successful
      */
     function transfer(address _to, uint256 _value) public returns (bool success) {
         require(_to != address(0), "Invalid address");
@@ -82,9 +85,10 @@ contract SimpleToken {
     }
 
     /**
-     * @dev Одобрение расходования токенов
-     * @param _spender Адрес, которому разрешено тратить
-     * @param _value Количество токенов
+     * @dev Approve spender to spend tokens on behalf of msg.sender
+     * @param _spender Address authorized to spend
+     * @param _value Amount of tokens approved
+     * @return success True if the operation was successful
      */
     function approve(address _spender, uint256 _value) public returns (bool success) {
         require(_spender != address(0), "Invalid address");
@@ -96,10 +100,11 @@ contract SimpleToken {
     }
 
     /**
-     * @dev Перевод токенов от имени другого адреса
-     * @param _from Адрес отправителя
-     * @param _to Адрес получателя
-     * @param _value Количество токенов
+     * @dev Transfer tokens from one address to another
+     * @param _from Sender address
+     * @param _to Recipient address
+     * @param _value Amount of tokens to transfer
+     * @return success True if the operation was successful
      */
     function transferFrom(address _from, address _to, uint256 _value)
         public
@@ -118,9 +123,10 @@ contract SimpleToken {
     }
 
     /**
-     * @dev Создание новых токенов (только владелец, если mintable)
-     * @param _to Адрес получателя
-     * @param _value Количество токенов
+     * @dev Mint new tokens (only owner, if mintable is enabled)
+     * @param _to Recipient address
+     * @param _value Amount of tokens to mint
+     * @return success True if the operation was successful
      */
     function mint(address _to, uint256 _value) public onlyOwner returns (bool success) {
         require(mintable, "Minting is disabled");
@@ -135,8 +141,9 @@ contract SimpleToken {
     }
 
     /**
-     * @dev Сжигание токенов
-     * @param _value Количество токенов
+     * @dev Burn tokens from sender's balance
+     * @param _value Amount of tokens to burn
+     * @return success True if the operation was successful
      */
     function burn(uint256 _value) public returns (bool success) {
         require(burnable, "Burning is disabled");
@@ -151,9 +158,10 @@ contract SimpleToken {
     }
 
     /**
-     * @dev Сжигание токенов от имени другого адреса
-     * @param _from Адрес владельца токенов
-     * @param _value Количество токенов
+     * @dev Burn tokens from another address
+     * @param _from Token owner address
+     * @param _value Amount of tokens to burn
+     * @return success True if the operation was successful
      */
     function burnFrom(address _from, uint256 _value) public returns (bool success) {
         require(burnable, "Burning is disabled");
@@ -170,9 +178,10 @@ contract SimpleToken {
     }
 
     /**
-     * @dev Увеличение allowance
-     * @param _spender Адрес получателя разрешения
-     * @param _addedValue Добавляемое количество
+     * @dev Increase allowance for spender
+     * @param _spender Address to increase allowance for
+     * @param _addedValue Amount to increase by
+     * @return success True if the operation was successful
      */
     function increaseAllowance(address _spender, uint256 _addedValue)
         public
@@ -187,9 +196,10 @@ contract SimpleToken {
     }
 
     /**
-     * @dev Уменьшение allowance
-     * @param _spender Адрес получателя разрешения
-     * @param _subtractedValue Уменьшаемое количество
+     * @dev Decrease allowance for spender
+     * @param _spender Address to decrease allowance for
+     * @param _subtractedValue Amount to decrease by
+     * @return success True if the operation was successful
      */
     function decreaseAllowance(address _spender, uint256 _subtractedValue)
         public
@@ -205,11 +215,13 @@ contract SimpleToken {
     }
 
     /**
-     * @dev Передача владения контрактом
-     * @param _newOwner Адрес нового владельца
+     * @dev Transfer contract ownership
+     * @param _newOwner Address of the new owner
      */
     function transferOwnership(address _newOwner) public onlyOwner {
         require(_newOwner != address(0), "Invalid address");
+        address previousOwner = owner;
         owner = _newOwner;
+        emit OwnershipTransferred(previousOwner, _newOwner);
     }
 }

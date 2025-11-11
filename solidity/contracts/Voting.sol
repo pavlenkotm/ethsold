@@ -3,10 +3,11 @@ pragma solidity ^0.8.20;
 
 /**
  * @title Voting
- * @dev Децентрализованная система голосования с возможностью создания предложений
+ * @dev Decentralized voting system with proposal creation capability
+ * @notice Allows registered voters to create and vote on proposals
  */
 contract Voting {
-    // Структура предложения для голосования
+    // Proposal structure for voting
     struct Proposal {
         uint256 id;
         string description;
@@ -18,14 +19,14 @@ contract Voting {
         mapping(address => bool) hasVoted;
     }
 
-    // Переменные состояния
+    // State variables
     address public owner;
     uint256 public proposalCount;
     mapping(uint256 => Proposal) public proposals;
     mapping(address => bool) public voters;
     uint256 public votingDuration = 7 days;
 
-    // События
+    // Events
     event ProposalCreated(
         uint256 indexed proposalId,
         string description,
@@ -42,7 +43,7 @@ contract Voting {
     event ProposalExecuted(uint256 indexed proposalId);
     event VoterRegistered(address indexed voter);
 
-    // Модификаторы
+    // Modifiers
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can call this");
         _;
@@ -60,12 +61,12 @@ contract Voting {
 
     constructor() {
         owner = msg.sender;
-        voters[msg.sender] = true; // Владелец автоматически становится избирателем
+        voters[msg.sender] = true; // Owner automatically becomes a voter
     }
 
     /**
-     * @dev Регистрация нового избирателя
-     * @param _voter Адрес избирателя
+     * @dev Register a new voter
+     * @param _voter Voter address
      */
     function registerVoter(address _voter) external onlyOwner {
         require(!voters[_voter], "Voter already registered");
@@ -74,8 +75,8 @@ contract Voting {
     }
 
     /**
-     * @dev Создание нового предложения
-     * @param _description Описание предложения
+     * @dev Create a new proposal
+     * @param _description Proposal description
      */
     function createProposal(string memory _description) external onlyRegisteredVoter {
         require(bytes(_description).length > 0, "Description cannot be empty");
@@ -102,9 +103,9 @@ contract Voting {
     }
 
     /**
-     * @dev Голосование за или против предложения
-     * @param _proposalId ID предложения
-     * @param _support true - за, false - против
+     * @dev Vote for or against a proposal
+     * @param _proposalId Proposal ID
+     * @param _support true - for, false - against
      */
     function vote(uint256 _proposalId, bool _support)
         external
@@ -129,8 +130,16 @@ contract Voting {
     }
 
     /**
-     * @dev Получение информации о предложении
-     * @param _proposalId ID предложения
+     * @dev Get proposal information
+     * @param _proposalId Proposal ID
+     * @return id Proposal ID
+     * @return description Proposal description
+     * @return votesFor Number of votes in favor
+     * @return votesAgainst Number of votes against
+     * @return deadline Voting deadline timestamp
+     * @return proposer Address of the proposer
+     * @return executed Whether the proposal has been executed
+     * @return isActive Whether the proposal is still active
      */
     function getProposal(uint256 _proposalId)
         external
@@ -161,9 +170,10 @@ contract Voting {
     }
 
     /**
-     * @dev Проверка, голосовал ли адрес
-     * @param _proposalId ID предложения
-     * @param _voter Адрес избирателя
+     * @dev Check if an address has voted
+     * @param _proposalId Proposal ID
+     * @param _voter Voter address
+     * @return True if the voter has voted on this proposal
      */
     function hasVoted(uint256 _proposalId, address _voter)
         external
@@ -175,8 +185,8 @@ contract Voting {
     }
 
     /**
-     * @dev Исполнение предложения (закрытие голосования)
-     * @param _proposalId ID предложения
+     * @dev Execute proposal (close voting)
+     * @param _proposalId Proposal ID
      */
     function executeProposal(uint256 _proposalId)
         external
@@ -192,8 +202,8 @@ contract Voting {
     }
 
     /**
-     * @dev Изменение длительности голосования
-     * @param _newDuration Новая длительность в секундах
+     * @dev Change voting duration
+     * @param _newDuration New duration in seconds
      */
     function setVotingDuration(uint256 _newDuration) external onlyOwner {
         require(_newDuration > 0, "Duration must be positive");
