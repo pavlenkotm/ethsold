@@ -1,0 +1,16 @@
+name: blockchain_tools
+version: 0.1.0
+
+authors:
+  - EthSold Contributors
+
+description: |
+  Ethereum blockchain tools written in Crystal
+
+crystal: 1.10.0
+
+license: MIT
+
+targets:
+  web3_client:
+    main: src/web3_client.cr

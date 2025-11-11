@@ -1,12 +1,12 @@
 # 🌐 Web3 Multi-Language Playground
 
-[![Languages](https://img.shields.io/badge/Languages-15+-blue.svg)](https://github.com/pavlenkotm/ethsold)
+[![Languages](https://img.shields.io/badge/Languages-22+-blue.svg)](https://github.com/pavlenkotm/ethsold)
 [![Smart Contracts](https://img.shields.io/badge/Smart_Contracts-10+-green.svg)](./solidity)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![Commits](https://img.shields.io/github/commit-activity/m/pavlenkotm/ethsold)](https://github.com/pavlenkotm/ethsold/commits)
 
-> **A comprehensive showcase of Web3 development across 15+ programming languages and blockchain platforms.**
+> **A comprehensive showcase of Web3 development across 22+ programming languages and blockchain platforms, including exotic languages like Zig, Elixir, Kotlin, Scala, Nim, Crystal, and Lua.**
 
 Explore production-ready examples, smart contracts, DApps, and tooling for Ethereum, Solana, Aptos, Cardano, and more. Perfect for developers learning blockchain development or showcasing multi-language expertise.
 
@@ -16,12 +16,13 @@ Explore production-ready examples, smart contracts, DApps, and tooling for Ether
 
 This repository demonstrates Web3 development expertise across the entire blockchain ecosystem:
 
-- **15+ Programming Languages** - From Solidity to Haskell
+- **22+ Programming Languages** - From Solidity to exotic languages like Zig, Elixir, Nim
 - **5+ Blockchain Platforms** - Ethereum, Solana, Aptos, Cardano, and more
-- **40+ Meaningful Commits** - Real development history
+- **50+ Meaningful Commits** - Real development history
 - **Production-Ready Code** - Security best practices included
 - **Comprehensive Documentation** - Each project has detailed README
 - **CI/CD Integration** - GitHub Actions workflows
+- **Exotic Languages** - Including Zig, Elixir, Kotlin, Scala, Nim, Crystal, Lua
 
 ---
 
@@ -50,6 +51,18 @@ This repository demonstrates Web3 development expertise across the entire blockc
 | **🐚 Bash** | DevOps | Node deployment & automation | [📁 bash/scripts/](./bash/scripts) |
 | **⚡ AssemblyScript** | WASM | High-performance Web3 operations | [📁 assemblyscript/wasm-example/](./assemblyscript/wasm-example) |
 | **🌐 HTML/CSS/JS** | Landing Page | Professional project showcase | [📁 frontend/landing-page/](./frontend/landing-page) |
+
+### 🔥 Exotic Languages
+
+| Language | Use Case | Description | Location |
+|----------|----------|-------------|----------|
+| **⚡ Zig** | Crypto Operations | High-performance Keccak256 & address utilities | [📁 zig/keccak256/](./zig/keccak256) |
+| **💧 Elixir** | Blockchain Node | Fault-tolerant node interface with OTP | [📁 elixir/blockchain_node/](./elixir/blockchain_node) |
+| **🤖 Kotlin** | Android Wallet | Modern Android wallet with Jetpack Compose | [📁 kotlin/android-wallet/](./kotlin/android-wallet) |
+| **🎓 Scala** | Enterprise | Functional blockchain client with Cats Effect | [📁 scala/enterprise-blockchain/](./scala/enterprise-blockchain) |
+| **👑 Nim** | Hash Functions | Efficient Keccak256 with Python-like syntax | [📁 nim/keccak_hash/](./nim/keccak_hash) |
+| **💎 Crystal** | Blockchain Tools | Ruby-like syntax with C performance | [📁 crystal/blockchain_tools/](./crystal/blockchain_tools) |
+| **🌙 Lua** | Smart Contract Scripts | Lightweight scripting for automation | [📁 lua/contract_scripts/](./lua/contract_scripts) |
 
 ---
 
@@ -161,6 +174,13 @@ ethsold/
 ├── haskell/               # Cardano Plutus contracts
 ├── assemblyscript/        # WebAssembly modules
 ├── frontend/              # HTML/CSS/JS landing page
+├── zig/                   # Zig Keccak256 implementation
+├── elixir/                # Elixir blockchain node
+├── kotlin/                # Kotlin Android wallet
+├── scala/                 # Scala enterprise blockchain
+├── nim/                   # Nim hash functions
+├── crystal/               # Crystal blockchain tools
+├── lua/                   # Lua smart contract scripts
 ├── .github/               # CI/CD workflows
 ├── README.md              # This file
 ├── CONTRIBUTING.md        # Contribution guidelines
@@ -218,11 +238,12 @@ Contributions are welcome! Please read our [Contributing Guidelines](./CONTRIBUT
 
 ## 📊 Repository Stats
 
-- **15+ Programming Languages** covering all major blockchain platforms
-- **40+ Meaningful Commits** demonstrating real development activity
+- **22+ Programming Languages** covering all major blockchain platforms + exotic languages
+- **50+ Meaningful Commits** demonstrating real development activity
 - **10+ Smart Contracts** for various use cases
 - **Production-Ready** code with security best practices
 - **Comprehensive Documentation** for every project
+- **7 Exotic Languages** - Zig, Elixir, Kotlin, Scala, Nim, Crystal, Lua
 
 ---
 
