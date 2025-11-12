@@ -1,14 +1,14 @@
 # 🌐 Web3 Multi-Language Playground
 
-[![Languages](https://img.shields.io/badge/Languages-22+-blue.svg)](https://github.com/pavlenkotm/ethsold)
-[![Smart Contracts](https://img.shields.io/badge/Smart_Contracts-10+-green.svg)](./solidity)
+[![Languages](https://img.shields.io/badge/Languages-28+-blue.svg)](https://github.com/pavlenkotm/ethsold)
+[![Smart Contracts](https://img.shields.io/badge/Smart_Contracts-15+-green.svg)](./solidity)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![Commits](https://img.shields.io/github/commit-activity/m/pavlenkotm/ethsold)](https://github.com/pavlenkotm/ethsold/commits)
 
-> **A comprehensive showcase of Web3 development across 22+ programming languages and blockchain platforms, including exotic languages like Zig, Elixir, Kotlin, Scala, Nim, Crystal, and Lua.**
+> **A comprehensive showcase of Web3 development across 28+ programming languages and blockchain platforms, including exotic languages like Zig, Elixir, Kotlin, Scala, Nim, Crystal, and Lua.**
 
-Explore production-ready examples, smart contracts, DApps, and tooling for Ethereum, Solana, Aptos, Cardano, and more. Perfect for developers learning blockchain development or showcasing multi-language expertise.
+Explore production-ready examples, smart contracts, DApps, and tooling for Ethereum, Solana, Aptos, Cardano, StarkNet, Polkadot, Stacks, NEAR, Internet Computer, Cosmos, and more. Perfect for developers learning blockchain development or showcasing multi-language expertise.
 
 ---
 
@@ -16,8 +16,8 @@ Explore production-ready examples, smart contracts, DApps, and tooling for Ether
 
 This repository demonstrates Web3 development expertise across the entire blockchain ecosystem:
 
-- **22+ Programming Languages** - From Solidity to exotic languages like Zig, Elixir, Nim
-- **5+ Blockchain Platforms** - Ethereum, Solana, Aptos, Cardano, and more
+- **28+ Programming Languages** - From Solidity to exotic languages like Zig, Elixir, Nim
+- **10+ Blockchain Platforms** - Ethereum, Solana, Aptos, Cardano, StarkNet, Polkadot, Stacks, NEAR, Internet Computer, Cosmos
 - **50+ Meaningful Commits** - Real development history
 - **Production-Ready Code** - Security best practices included
 - **Comprehensive Documentation** - Each project has detailed README
@@ -32,11 +32,16 @@ This repository demonstrates Web3 development expertise across the entire blockc
 
 | Language | Platform | Description | Location |
 |----------|----------|-------------|----------|
-| **🔷 Solidity** | Ethereum | 10 production-ready contracts (ERC-20, ERC-721, DeFi) | [📁 solidity/](./solidity) |
-| **🐍 Vyper** | Ethereum | Pythonic EVM contracts with enhanced security | [📁 vyper/](./vyper) |
-| **🦀 Rust** | Solana | Anchor framework programs | [📁 rust/solana-program/](./rust/solana-program) |
-| **🚀 Move** | Aptos | Resource-oriented smart contracts | [📁 move/aptos/](./move/aptos) |
+| **🔷 Solidity** | Ethereum (EVM) | 10 production-ready contracts (ERC-20, ERC-721, DeFi) | [📁 solidity/](./solidity) |
+| **🐍 Vyper** | Ethereum (EVM) | Pythonic EVM contracts with enhanced security | [📁 vyper/](./vyper) |
+| **🦀 Rust** | Solana, NEAR | Anchor framework programs + NEAR Protocol contracts | [📁 rust/solana-program/](./rust/solana-program) [📁 rust/near-contract/](./rust/near-contract) |
+| **🚀 Move** | Aptos, Sui | Resource-oriented smart contracts | [📁 move/aptos/](./move/aptos) |
 | **🎩 Haskell** | Cardano | Plutus validators and minting policies | [📁 haskell/plutus-cardano/](./haskell/plutus-cardano) |
+| **🔺 Cairo** | StarkNet | ZK-rollup smart contracts with provable computation | [📁 cairo/starknet-contract/](./cairo/starknet-contract) |
+| **🔷 Ink!** | Polkadot/Substrate | Rust-based eDSL for parachains and Substrate chains | [📁 ink/polkadot-contract/](./ink/polkadot-contract) |
+| **🟠 Clarity** | Stacks (Bitcoin L2) | Decidable smart contracts on Bitcoin | [📁 clarity/stacks-contract/](./clarity/stacks-contract) |
+| **🌐 Motoko** | Internet Computer | Actor-based language for ICP canisters | [📁 motoko/icp-canister/](./motoko/icp-canister) |
+| **🌌 Go** | Cosmos SDK | Custom modules for Cosmos blockchain | [📁 go/cosmos-module/](./go/cosmos-module) |
 
 ### Application & Tooling Languages
 
@@ -162,11 +167,19 @@ Anchor framework counter program with:
 ethsold/
 ├── solidity/              # Ethereum smart contracts (Hardhat)
 ├── vyper/                 # Vyper EVM contracts
-├── rust/                  # Solana Anchor programs
+├── rust/
+│   ├── solana-program/    # Solana Anchor programs
+│   └── near-contract/     # NEAR Protocol contracts
 ├── move/                  # Aptos smart contracts
+├── cairo/                 # StarkNet Cairo contracts
+├── ink/                   # Polkadot/Substrate Ink! contracts
+├── clarity/               # Stacks (Bitcoin L2) contracts
+├── motoko/                # Internet Computer canisters
 ├── typescript/            # React DApp with Wagmi
 ├── python/                # Web3.py CLI tools
-├── go/                    # Go Ethereum client
+├── go/
+│   ├── rpc-client/        # Go Ethereum client
+│   └── cosmos-module/     # Cosmos SDK modules
 ├── cpp/                   # Crypto algorithms
 ├── java/                  # Web3j enterprise integration
 ├── swift/                 # iOS/macOS wallet SDK
@@ -238,9 +251,10 @@ Contributions are welcome! Please read our [Contributing Guidelines](./CONTRIBUT
 
 ## 📊 Repository Stats
 
-- **22+ Programming Languages** covering all major blockchain platforms + exotic languages
+- **28+ Programming Languages** covering all major blockchain platforms + exotic languages
 - **50+ Meaningful Commits** demonstrating real development activity
-- **10+ Smart Contracts** for various use cases
+- **15+ Smart Contracts** across 10+ blockchain platforms
+- **10+ Blockchain Platforms** - Ethereum, Solana, NEAR, Aptos, Cardano, StarkNet, Polkadot, Stacks, Internet Computer, Cosmos
 - **Production-Ready** code with security best practices
 - **Comprehensive Documentation** for every project
 - **7 Exotic Languages** - Zig, Elixir, Kotlin, Scala, Nim, Crystal, Lua
