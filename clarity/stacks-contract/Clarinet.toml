@@ -1,0 +1,16 @@
+[project]
+name = "stacks-contract"
+authors = ["Web3 Developer"]
+description = "Clarity smart contracts for Stacks blockchain"
+telemetry = false
+
+[contracts.counter]
+path = "counter.clar"
+clarity_version = 2
+
+[contracts.token]
+path = "sip010-token.clar"
+clarity_version = 2
+
+[repl.analysis]
+passes = ["check_checker"]

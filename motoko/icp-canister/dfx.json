@@ -1,0 +1,20 @@
+{
+  "canisters": {
+    "counter": {
+      "main": "counter.mo",
+      "type": "motoko"
+    },
+    "token": {
+      "main": "token.mo",
+      "type": "motoko"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
