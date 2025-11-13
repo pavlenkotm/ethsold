@@ -4,11 +4,12 @@
   "description": "Коллекция смарт-контрактов на Solidity для сети Ethereum",
   "main": "index.js",
   "scripts": {
-    "compile": "hardhat compile",
+    "compile": "node compile-with-solcjs.js",
+    "compile:hardhat": "hardhat compile",
     "test": "hardhat test",
     "deploy": "hardhat run scripts/deploy.js",
     "node": "hardhat node",
-    "clean": "hardhat clean"
+    "clean": "hardhat clean && rm -rf artifacts/contracts"
   },
   "keywords": [
     "ethereum",
@@ -24,7 +25,8 @@
   "license": "MIT",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
-    "hardhat": "^2.19.0"
+    "hardhat": "^2.19.0",
+    "solc-js": "^1.0.1"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.0",
