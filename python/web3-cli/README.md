@@ -15,6 +15,7 @@ This directory contains Python scripts demonstrating:
 - 📝 **Message Signing** - Sign and verify messages
 - 📜 **Contract Deployment** - Compile and deploy Solidity contracts
 - 🔍 **Blockchain Queries** - Read blocks, transactions, events
+- ⛽ **EIP-1559 Smart Fees** - Dynamic fee oracle & type-2 transactions
 - 🎨 **Beautiful CLI** - Rich terminal output with colors
 
 ## 🚀 Quick Start
@@ -62,6 +63,16 @@ python wallet_manager.py balance 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
 **Send ETH:**
 ```bash
 python wallet_manager.py send <private_key> <to_address> <amount>
+```
+
+**Send with dynamic EIP-1559 fees:**
+```bash
+python wallet_manager.py send1559 <private_key> <to_address> <amount>
+```
+
+**Inspect live fee recommendations:**
+```bash
+python wallet_manager.py fees
 ```
 
 **Sign a message:**

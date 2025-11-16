@@ -3,6 +3,7 @@ Unit tests for WalletManager
 """
 
 import pytest
+from decimal import Decimal
 from unittest.mock import Mock, patch
 from wallet_manager import WalletManager
 
@@ -71,6 +72,75 @@ class TestWalletManager:
 
             assert signature is not None
             assert isinstance(signature, str)
+
+    @patch('wallet_manager.Web3')
+    def test_estimate_dynamic_fees(self, mock_web3):
+        """Fee oracle should return defensive EIP-1559 values"""
+        web3_instance = Mock()
+        web3_instance.is_connected.return_value = True
+        web3_instance.to_wei.side_effect = lambda value, unit='ether': int(
+            value * (10 ** 18 if unit == 'ether' else 10 ** 9)
+        )
+        web3_instance.from_wei.side_effect = lambda value, unit='ether': Decimal(value) / (
+            Decimal(10) ** (18 if unit == 'ether' else 9)
+        )
+        eth = Mock()
+        eth.chain_id = 1
+        eth.block_number = 100
+        eth.fee_history.return_value = {
+            'baseFeePerGas': [1000000000, 1200000000],
+            'reward': [[2000000000], [3000000000]],
+        }
+        web3_instance.eth = eth
+        mock_web3.return_value = web3_instance
+
+        manager = WalletManager()
+        fees = manager.estimate_dynamic_fees()
+
+        assert fees['baseFeeWei'] == 1200000000
+        assert fees['priorityFeeWei'] == 3000000000
+        assert fees['maxFeeWei'] == 5400000000  # base * 2 + priority
+
+    @patch('wallet_manager.Web3')
+    def test_send_transaction_eip1559(self, mock_web3):
+        """Send transaction should support dynamic EIP-1559 fields"""
+        web3_instance = Mock()
+        web3_instance.is_connected.return_value = True
+        web3_instance.to_checksum_address.return_value = '0xabc'
+        web3_instance.to_wei.side_effect = lambda value, unit='ether': int(
+            value * (10 ** 18 if unit == 'ether' else 10 ** 9)
+        )
+        web3_instance.from_wei.side_effect = lambda value, unit='ether': Decimal(value) / (
+            Decimal(10) ** (18 if unit == 'ether' else 9)
+        )
+
+        eth = Mock()
+        eth.chain_id = 1
+        eth.block_number = 123
+        eth.get_transaction_count.return_value = 0
+        eth.estimate_gas.return_value = 25000
+        eth.fee_history.return_value = {
+            'baseFeePerGas': [1000000000, 1500000000],
+            'reward': [[2000000000], [2500000000]],
+        }
+        sign_result = Mock()
+        sign_result.rawTransaction = b'raw_tx'
+        eth.account = Mock()
+        eth.account.sign_transaction.return_value = sign_result
+        eth.send_raw_transaction.return_value = b'\x12\x34'
+        web3_instance.eth = eth
+        mock_web3.return_value = web3_instance
+
+        manager = WalletManager()
+        tx_hash = manager.send_transaction(
+            private_key='0x' + '1' * 64,
+            to_address='0xdef',
+            amount_eth=0.01,
+            use_eip1559=True,
+        )
+
+        eth.account.sign_transaction.assert_called_once()
+        assert tx_hash == '1234'
 
 
 if __name__ == '__main__':

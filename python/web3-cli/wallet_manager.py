@@ -5,11 +5,11 @@ Demonstrates Web3.py usage for blockchain interactions
 """
 
 import sys
+from decimal import Decimal
+import os
 from web3 import Web3
 from eth_account import Account
 from eth_account.messages import encode_defunct
-from decimal import Decimal
-import os
 
 
 class WalletManager:
@@ -59,7 +59,9 @@ class WalletManager:
         private_key: str,
         to_address: str,
         amount_eth: float,
-        gas_price_gwei: int = 50
+        gas_price_gwei: int = 50,
+        gas_limit: int | None = None,
+        use_eip1559: bool = False
     ) -> str:
         """
         Send ETH transaction
@@ -69,6 +71,8 @@ class WalletManager:
             to_address: Recipient address
             amount_eth: Amount in ETH
             gas_price_gwei: Gas price in Gwei
+            gas_limit: Optional gas limit (auto-estimated when omitted)
+            use_eip1559: Use dynamic fee market transaction with fee history oracle
 
         Returns:
             Transaction hash
@@ -76,22 +80,69 @@ class WalletManager:
         account = Account.from_key(private_key)
         from_address = account.address
 
-        # Build transaction
         nonce = self.w3.eth.get_transaction_count(from_address)
-        tx = {
+        base_tx = {
             'nonce': nonce,
             'to': self.w3.to_checksum_address(to_address),
             'value': self.w3.to_wei(amount_eth, 'ether'),
-            'gas': 21000,
-            'gasPrice': self.w3.to_wei(gas_price_gwei, 'gwei'),
-            'chainId': self.w3.eth.chain_id
+            'chainId': self.w3.eth.chain_id,
+            'from': from_address,
         }
+
+        if gas_limit is None:
+            try:
+                gas_limit = self.w3.eth.estimate_gas(base_tx)
+            except Exception:
+                gas_limit = 21000
+
+        if use_eip1559:
+            fees = self.estimate_dynamic_fees()
+            tx = {
+                **base_tx,
+                'gas': gas_limit,
+                'maxPriorityFeePerGas': fees['priorityFeeWei'],
+                'maxFeePerGas': fees['maxFeeWei'],
+                'type': 2,
+            }
+        else:
+            tx = {
+                **base_tx,
+                'gas': gas_limit,
+                'gasPrice': self.w3.to_wei(gas_price_gwei, 'gwei'),
+            }
 
         # Sign and send
         signed_tx = self.w3.eth.account.sign_transaction(tx, private_key)
         tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
 
         return tx_hash.hex()
+
+    def estimate_dynamic_fees(self, blocks: int = 5, percentile: int = 60) -> dict:
+        """
+        Suggest EIP-1559 fee parameters using fee_history oracle.
+
+        Args:
+            blocks: Number of recent blocks to sample
+            percentile: Priority fee percentile to target (0-100)
+
+        Returns:
+            Dictionary with baseFeeWei, priorityFeeWei, maxFeeWei and Gwei conversions
+        """
+        history = self.w3.eth.fee_history(blocks, 'latest', [percentile])
+        base_fee_wei = int(history['baseFeePerGas'][-1])
+        rewards = history.get('reward', [[self.w3.to_wei(2, 'gwei')]])
+        priority_fee_wei = int(rewards[-1][0]) if rewards and rewards[-1] else self.w3.to_wei(2, 'gwei')
+        # Be defensive against sudden base fee doubling
+        max_fee_wei = base_fee_wei * 2 + priority_fee_wei
+
+        return {
+            'baseFeeWei': base_fee_wei,
+            'priorityFeeWei': priority_fee_wei,
+            'maxFeeWei': max_fee_wei,
+            'baseFeeGwei': Decimal(str(self.w3.from_wei(base_fee_wei, 'gwei'))),
+            'priorityFeeGwei': Decimal(str(self.w3.from_wei(priority_fee_wei, 'gwei'))),
+            'maxFeeGwei': Decimal(str(self.w3.from_wei(max_fee_wei, 'gwei'))),
+        }
 
     def get_transaction_receipt(self, tx_hash: str) -> dict:
         """
@@ -192,6 +243,8 @@ Usage:
   python wallet_manager.py create                    Create new wallet
   python wallet_manager.py balance <address>         Get ETH balance
   python wallet_manager.py send <key> <to> <amount>  Send ETH
+  python wallet_manager.py send1559 <key> <to> <amount>  Send ETH with dynamic fees
+  python wallet_manager.py fees                      Show EIP-1559 fee suggestion
   python wallet_manager.py sign <key> <message>      Sign message
 
 Environment Variables:
@@ -232,6 +285,38 @@ Environment Variables:
         tx_hash = manager.send_transaction(private_key, to_address, amount)
         print(f"✅ Transaction sent!")
         print(f"TX Hash: {tx_hash}")
+
+    elif command == 'send1559':
+        if len(sys.argv) < 5:
+            print("Usage: python wallet_manager.py send1559 <private_key> <to_address> <amount_eth>")
+            sys.exit(1)
+        private_key = sys.argv[2]
+        to_address = sys.argv[3]
+        amount = float(sys.argv[4])
+
+        fees = manager.estimate_dynamic_fees()
+        print("\n⛽ Using dynamic fee market suggestions:")
+        print(f"  Base fee: {fees['baseFeeGwei']} gwei")
+        print(f"  Priority fee: {fees['priorityFeeGwei']} gwei")
+        print(f"  Max fee: {fees['maxFeeGwei']} gwei")
+
+        print(f"\n📤 Sending {amount} ETH to {to_address} with EIP-1559 fees...")
+        tx_hash = manager.send_transaction(
+            private_key,
+            to_address,
+            amount,
+            use_eip1559=True,
+            gas_limit=25000,
+        )
+        print(f"✅ Transaction sent!")
+        print(f"TX Hash: {tx_hash}")
+
+    elif command == 'fees':
+        fees = manager.estimate_dynamic_fees()
+        print("\n📊 EIP-1559 Fee Recommendation")
+        print(f"Base fee: {fees['baseFeeGwei']} gwei")
+        print(f"Priority fee (@60th percentile): {fees['priorityFeeGwei']} gwei")
+        print(f"Max fee (base*2 + priority): {fees['maxFeeGwei']} gwei")
 
     elif command == 'sign':
         if len(sys.argv) < 4:
